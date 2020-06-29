@@ -7,6 +7,7 @@ from wtforms.validators import DataRequired
 
 
 class PlanForm(FlaskForm):
+    id = IntegerField("id")
     name = StringField("名称", validators=[DataRequired()])
     initial_quotas = FloatField("起始金额", validators=[DataRequired()])  # 最初配额
     price_top = FloatField("价格顶部", validators=[DataRequired()])  # 价格顶部
@@ -14,7 +15,6 @@ class PlanForm(FlaskForm):
     increase_rate = FloatField("增长率", validators=[DataRequired()])  # 增长率
     reduce_rate = FloatField("减少率", validators=[DataRequired()])  # 减少率
     start_price = FloatField("起始价", validators=[DataRequired()])
-
 
     def __init__(self, *args, **kwargs):
         """Create instance."""

@@ -6,9 +6,14 @@ class PlanServices:
 
     @classmethod
     def crate(cls, form):
-        name = form.name.data
-        model = Plan.query.filter_by(name=form.name.data).first()
-        if model:
+
+        _id = form.id.data
+
+        print(_id, type(_id))
+
+        if _id != 0:
+            print("------------------", form.name.data)
+            model = Plan.query.filter_by(id=_id).first()
             model.name = form.name.data
             model.initial_quotas = form.initial_quotas.data
             model.price_top = form.price_top.data
@@ -16,11 +21,10 @@ class PlanServices:
             model.increase_rate = form.increase_rate.data
             model.reduce_rate = form.reduce_rate.data
             model.start_price = form.start_price.data
-
-
             model.save()
             return model
 
+        print("-----------------------------")
         model = Plan.create(initial_quotas=form.initial_quotas.data, price_top=form.price_top.data,
                             price_bottom=form.price_bottom.data, increase_rate=form.increase_rate.data,
                             reduce_rate=form.reduce_rate.data, name=form.name.data, start_price=form.start_price.data
@@ -34,6 +38,10 @@ class PlanServices:
         else:
             model = Plan.query.filter_by(id=_id).first()
         return model
+
+    @classmethod
+    def filter_all(cls):
+        return Plan.query.filter_by().all()
 
     @classmethod
     def compute(cls, model):
@@ -99,19 +107,18 @@ class PlanServices:
                     cell["buy_shares"] = buy_shares  # 本次数量
                     cell["now_quotas"] = now_quotas  # 本次额度
 
+            cell["average_price"] = round(cell["amount_money"]/cell["amount_shares"] if cell["amount_shares"] else 0, 2)
+
         sell_money = 0
         for i in data:
 
             i["position"] = round(i["amount_money"]/amount_money * 100, 1)
-
             print(i["now_price"], i["buy_shares"], i["now_quotas"], i["now_quotas"])
             sell_money += i["sell_number"] * i["now_price"]
 
         profit = int(sell_money - amount_money)
         profit_margin = round(profit / amount_money, 3)
-
         resp = {"profit_margin": profit_margin, "profit": profit, "amount_money": amount_money, "data": data}
-
         return resp
 
 
