@@ -9,10 +9,7 @@ class PlanServices:
 
         _id = form.id.data
 
-        print(_id, type(_id))
-
         if _id != 0:
-            print("------------------", form.name.data)
             model = Plan.query.filter_by(id=_id).first()
             model.name = form.name.data
             model.initial_quotas = form.initial_quotas.data
@@ -24,7 +21,6 @@ class PlanServices:
             model.save()
             return model
 
-        print("-----------------------------")
         model = Plan.create(initial_quotas=form.initial_quotas.data, price_top=form.price_top.data,
                             price_bottom=form.price_bottom.data, increase_rate=form.increase_rate.data,
                             reduce_rate=form.reduce_rate.data, name=form.name.data, start_price=form.start_price.data
@@ -113,7 +109,7 @@ class PlanServices:
         for i in data:
 
             i["position"] = round(i["amount_money"]/amount_money * 100, 1)
-            print(i["now_price"], i["buy_shares"], i["now_quotas"], i["now_quotas"])
+
             sell_money += i["sell_number"] * i["now_price"]
 
         profit = int(sell_money - amount_money)

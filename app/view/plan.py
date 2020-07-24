@@ -54,10 +54,24 @@ def lists(_id):
         form.start_price.data = model.start_price
 
         resp = PlanServices.compute(model)
-        profit_margin = round(resp["profit_margin"] *100, 1)
+        profit_margin = round(resp["profit_margin"] * 100, 1)
         amount_money = resp["amount_money"]
         data = resp["data"]
         profit = resp["profit"]
+
+
+        # try:
+        #     resp = PlanServices.compute(model)
+        #     profit_margin = round(resp["profit_margin"] * 100, 1)
+        #     amount_money = resp["amount_money"]
+        #     data = resp["data"]
+        #     profit = resp["profit"]
+        # except BaseException as e:
+        #     flash(f"参数错误:{e}")
+        #     profit_margin = 0
+        #     amount_money = 0
+        #     data = []
+        #     profit = 0
     else:
         profit_margin = 0
         amount_money = 0
