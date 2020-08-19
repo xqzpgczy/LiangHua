@@ -3,6 +3,11 @@
 2: 安装 pipenv  :    pip install pipenv
 3: 进入项目根目录， 也就是LiangHua 文件夹下执行创建虚拟环境：    pipenv shell
 4：安装依赖： pip install -r requirements.txt
+5: 数据库相关， 试用 sqlite   不需要安装，但需要建立数据模型。 执行：
+    flask db init
+    flask db migrate
+    flask db upgrade
+
 5： 启动项目：    flask run
 6:  浏览器访问： 127.0.0.0：5000
 
