@@ -1,13 +1,16 @@
+from app.models.plan import Plan
+
+
 class PlanServices:
-    def __init__(self, top, bottom, buy_start, sell_start, top_share, increase, reduce):
+    def __init__(self, top, bottom, buy_start, sell_start, top_share, increase_rate, reduce_rate):
         """价格区间"""
         self.top = top  # 价格顶部
         self.bottom = bottom  # 价格底部
         self.buy_start = buy_start  # 起始买入点
         self.sell_start = sell_start  # 起始卖出点
         self.top_share = top_share  # 买入时 顶部股分数量
-        self.increase = increase  # 买入数量增长率
-        self.reduce = reduce  # 价位减少率
+        self.increase_rate = increase_rate  # 买入数量增长率
+        self.reduce_rate = reduce_rate  # 价位减少率
         self.count_amount = 0  # 总买入金额
         self.count_sell_amount = 0
         self.count_share = 0  # 总买入股数
@@ -23,7 +26,6 @@ class PlanServices:
         {'price': 1.9, 'plan_share': 1100, 'buy': 1100, 'buy_amount': 2090.0, 'count_share': 2100, 'count_amount': 4090.0}
         """
         buy_info = self.buy_plan()
-
         self.initial_position = round(self.initial_position_amount/self.count_amount, 3)
 
         self.plan_info = self.sell_plan(buy_info)
@@ -65,7 +67,7 @@ class PlanServices:
             info["count_sell_amount"] = self.count_sell_amount
 
         """计算超出顶端的"""
-        _rate = round(1/self.reduce, 2)  # 价格向上增长比率
+        _rate = round(1/self.reduce_rate, 2)  # 价格向上增长比率
         _rate_n = 1
 
         for i in range(_sell_n, len(self.share_plan)):
@@ -104,12 +106,14 @@ class PlanServices:
         count_amount = 0
         BuyFlg = False
         while True:
-            _price = round(self.top * self.reduce ** n, 3)
+
+            print(type(self.top) ,type( self.reduce_rate))
+            _price = round(self.top * self.reduce_rate ** n, 3)
 
             if _price < self.bottom:
                 break
 
-            _plan_share = int(self.top_share * self.increase ** n//100 * 100)
+            _plan_share = int(self.top_share * self.increase_rate ** n//100 * 100)
             self.share_plan.append(_plan_share)
             count_share += _plan_share
 
@@ -134,51 +138,28 @@ class PlanServices:
         self.count_share = count_share
         return date
 
+    @classmethod
+    def save_plan_mode(cls, form):
 
-def func(increase, reduce):
-    plan = PlanServices(top, bottom, buy_start, sell_start, top_share, increase, reduce)
-    plan.run()
-    return plan
+        model = Plan.query.filter_by(id=form.id.data).first()
 
+        if model:
+            model.name = form.name.data
+            model.top = form.top.data
+            model.bottom = form.bottom.data
+            model.buy_start = form.buy_start.data
+            model.sell_start = form.sell_start.data
+            model.top_share = form.top_share.data
+            model.increase_rate = form.increase_rate.data
+            model.reduce_rate = form.reduce_rate.data
 
-def func2():
-    for x in range(100, 200):
-        for y in range(50, 100):
-            try:
-                plan = func(x/100, y/100)
-            except:
-                continue
+            model.save()
+            return model
 
-            count_amount = plan.count_amount
-            rate = plan.profit_rate
+        model = Plan.create(name=form.name.data, top=form.top.data, bottom=form.bottom.data,
+                            buy_start=form.buy_start.data, sell_start=form.sell_start.data,
+                            top_share=form.top_share.data, increase_rate=form.increase_rate.data,
+                            reduce_rate=form.reduce_rate.data
+                            )
+        return model
 
-            if x < 100 or y < 97 or rate < 0.2 or count_amount >100000:
-                continue
-
-            sell_top = plan.plan_info[0]["price"]
-            print(f"股数增长比:{x/100}  价格下降比:{y/100} 总层数：{len(plan.plan_info)} 初始仓位比{plan.initial_position} "
-                  f"最高价格: {plan.sell_top_price}"
-                  f"总资金：{count_amount} 增长：{rate}")
-
-def func3():
-    plan = PlanServices(top, bottom, buy_start, sell_start, top_share, increase, reduce)
-    plan.run()
-    n = 1
-    for i in plan.plan_info:
-        print(n, i)
-
-        if i['plan_share']:
-            n = n + 1
-    print(plan.profit_margin, int(plan.profit_margin * plan.count_amount))
-
-
-top = 10
-bottom = 5
-buy_start = 6
-sell_start = 6.5
-top_share = 600
-increase = 1.04
-reduce = 0.975
-
-func2()
-# func3()

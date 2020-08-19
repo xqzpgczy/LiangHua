@@ -1,0 +1,14 @@
+第一次部署
+1: 往上搜教程   安装 python3.6
+2: 安装 pipenv  :    pip install pipenv
+3: 进入项目根目录， 也就是LiangHua 文件夹下执行创建虚拟环境：    pipenv shell
+4：安装依赖： pip install -r requirements.txt
+5： 启动项目：    flask run
+6:  浏览器访问： 127.0.0.0：5000
+
+平时启动：
+1： 进入项目 启动虚拟环境：   pipenv shell
+2: 启动项目：   flask run
+
+
+

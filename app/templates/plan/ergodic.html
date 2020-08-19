@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+.title {display:inline-block; width:90px}
+.form-inline .form-control {
+    display: inline-block;
+    width: 90px;
+    vertical-align: middle;
+}
+
+.form-inline .row_2 .form-control {
+    display: inline-block;
+    width: 80px;
+    vertical-align: middle;
+}
+
+
+.row {padding-top:5px}
+
+</style>
+
+
+<div class="container col-sm-11" >
+        <form id="PlanForm" class="form-inline"  role="form" action="" method="post">
+                 {{ form.csrf_token }}
+            <div class="row col-sm-10">
+                <div class="form-group" hidden>
+                    <label class="" for="id">id:</label>
+                    <input type="text" class="form-control" id="id" name="id" {% if form.id.data %} value="{{form.id.data}}" {%else%} value=0 {%endif%}>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="title">名称:</div>
+                    <input type="text" class="form-control col-sm-8" id="name" name="name" {% if form.name.data %} value="{{form.name.data}}"{%endif%}>
+                </div>
+                <div class="col-sm-2">
+                    <div class="title">买最高价:</div>
+                    <input type="text" class="form-control col-sm-8" id="top" name="top" {% if form.top.data %} value="{{form.top.data}}"{%endif%}>
+                </div>
+                <div class="col-sm-2">
+                    <div class="title">买最低价:</div>
+                    <input type="text" class="form-control col-sm-8" id="bottom" name="bottom" {% if form.bottom.data %} value="{{form.bottom.data}}"{%endif%}>
+                </div>
+                <div class="col-sm-2">
+                    <div class="title">起始买价:</div>
+                    <input type="text" class="form-control col-sm-8" id="buy_start" name="buy_start" {% if form.buy_start.data %} value="{{form.buy_start.data}}"{%endif%}>
+                </div>
+                <div class="col-sm-2">
+                    <div class="title">起始卖价:</div>
+                    <input type="text" class="form-control col-sm-8" id="sell_start" name="sell_start" {% if form.sell_start.data %} value="{{form.sell_start.data}}"{%endif%}>
+                </div>
+                <div class="col-sm-2">
+                    <div class="title">起始股数:</div>
+                    <input type="text" class="form-control col-sm-8" id="top_share" name="top_share" {% if form.top_share.data %} value="{{form.top_share.data}}"{%endif%}>
+                </div>
+          </div>
+
+            <div class="row col-sm-10 row_2">
+                <div class="col-sm-2">
+                    <div class="title">价格下降:>=</div>
+                    <input type="text" class="form-control col-sm-8" id="reduce_rate" name="reduce_rate" {% if form.reduce_rate.data != None %} value="{{form.reduce_rate.data}}"{%endif%}>
+
+                </div>
+                <div class="col-sm-2" >
+                    <div class="title">股数增长:>=</div>
+                    <input type="text" class="form-control col-sm-8" id="increase_rate" name="increase_rate" {% if form.increase_rate.data != None %} value="{{form.increase_rate.data}}"{%endif%}>
+                </div>
+                <div class="col-sm-2">
+                      <div class="title">利润:>=</div>
+
+                    <input type="text" class="form-control col-sm-8" id="profit_rate" name="profit_rate" {% if form.profit_rate.data != None %} value="{{form.profit_rate.data}}"{%endif%}>
+                    %
+                </div>
+
+                <div class="col-sm-2">
+                      <div class="title">总资金:<=</div>
+                    <input type="text" class="form-control col-sm-8" id="count_amount" name="count_amount" {% if form.count_amount.data != None %} value="{{form.count_amount.data}}"{%endif%}>
+                    万
+                </div>
+
+                <div class="col-sm-2">
+
+                    <button type="submit" class="btn btn-default">查询</button>
+
+                </div>
+
+            </div>
+
+<!--            <div class="row col-sm-2">-->
+<!--                <button type="submit" class="btn btn-default">查询</button>-->
+<!--            </div>-->
+
+        </form>
+
+ <button type="submit" class="btn btn-default">查询</button>
+    <div class="col-sm-12 ">
+
+        <center>
+
+        <table class="table col-sm-10">
+        <thead>
+        <tr>
+            <th>利润率</th>
+            <th>总资金</th>
+            <th>股数增长</th>
+            <th>价格下降</th>
+            <th>初始仓位</th>
+            <th>最高价格</th>
+            <th>总层数</th>
+            <th>查看</th>
+             <th>使用</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for info in infos %}
+        <tr>
+            <td> 利润率: {{ info.profit_rate }}%</td>
+            <td> 总资金: {{ info.count_amount }}万</td>
+            <td> 股数增长: {{ info.increase_rate }}</td>
+            <td> 价格下降: {{ info.reduce_rate }}</td>
+            <td> 初始仓位: {{ info.initial_position}}</td>
+            <td> 最高价格: {{ info.sell_top_price }}</td>
+            <td> 总层数: {{ info.cell }}</td>
+            <td onclick= func({{info.increase_rate}},{{info.reduce_rate}}) >查看</td>
+            <td>使用</td>
+        </tr>
+        {%endfor%}
+
+        </tbody>
+      </table>
+        </center>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+ <script type="text/javascript">
+
+      function func(x,y){
+
+       var key_list = ["id", "name", "top","bottom","buy_start", "sell_start", "top_share"];
+
+        var href = "";
+        for (k in key_list){
+
+            var v = key_list[k] + "=" +   $("#" + key_list[k]).val() ;
+
+            if (href==""){
+                href = v;
+            }else{
+                href = href + "&" + v;
+            }
+        }
+
+        window.open("/plan/plan_test?" + href + "&increase_rate=" + x  + "&reduce_rate=" + y);
+
+<!--        $("#PlanForm").attr("action","/plan/info/0");-->
+<!--        $("#increase_rate").val(x);-->
+<!--        $("#reduce_rate").val(y);-->
+<!--        $("#PlanForm").submit();-->
+
+
+
+      }
+
+
+ </script>
+
+    {% endblock %}

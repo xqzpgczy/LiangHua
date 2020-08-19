@@ -18,6 +18,7 @@ DEBUG = ENV == "development"
 SQLALCHEMY_DATABASE_URI ='sqlite:///' + os.path.join(os.getcwd(), 'data.sqlite')
 
 SECRET_KEY = env.str("SECRET_KEY")
+WTF_CSRF_ENABLED = False # 禁用 csrf
 SEND_FILE_MAX_AGE_DEFAULT = env.int("SEND_FILE_MAX_AGE_DEFAULT")
 BCRYPT_LOG_ROUNDS = env.int("BCRYPT_LOG_ROUNDS", default=13)
 DEBUG_TB_ENABLED = DEBUG

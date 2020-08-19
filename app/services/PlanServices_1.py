@@ -1,3 +1,10 @@
+"""
+区间内以固定金额 递增买入。 从顶部向底部依次买入
+
+卖出从底部开始  按照买入顺序依此卖出
+"""
+
+
 from app.models.plan import Plan
 import math
 
@@ -116,7 +123,6 @@ class PlanServices:
         profit_margin = round(profit / amount_money, 3)
         resp = {"profit_margin": profit_margin, "profit": profit, "amount_money": amount_money, "data": data}
         return resp
-
 
 
 
