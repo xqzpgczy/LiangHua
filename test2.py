@@ -1,41 +1,71 @@
+# from app.app import create_app
+# from app.models.users import User
 #
-# a = """
-#     id = www
-#     name = Column(db.String(80), nullable=False)
-#     top = Column(db.Float)  # 价格顶部
-#     bottom = Column(db.Float)  # 价格底部
-#     buy_start = Column(db.Float)  # 起始买入价格
-#     sell_start = Column(db.Float)  # 起始卖出价格
-#     top_share = Column(db.Float)  # 初始额度
-#     increase_rate = Column(db.Float)  # 仓位递增率
-#     reduce_rate = Column(db.Float)  # 价格递减率
 #
-# """
+# app = create_app()
+# with app.app_context():
 #
-# r = ""
+#     model = User.query.get(1).role
 #
-# for i in a.split("\n"):
-#
-#     if not i:
-#         continue
-#     i = i.split("=")[0]
-#     i = i.strip()
-#     a = f'form.{i}.data = float(request.args.get("{i}"))'
-#     print(a)
-#
-# print(r)
+#     print(model.name)
 
-c = {}
 
-date = [
-    [1,2,3,4],
-    [2,3,4,5]
-]
+# hous = 2000
+# food = 2000
+# other = 1000
+# year_money = (hous + food + other)*12
+#
+# rate = 0.07
+# aroumn = year_money / rate
+#
+# print(aroumn)
 
-for i in date:
-    for k in i:
-        if k in c:
-            c[k] = c[k] + 1
-        else:
-            c[k] = 1
-print(c)
+worke = 20
+rate = 0.20
+amound = 80
+
+print(f"起始资金{amound}, 工资年盈余{worke},收益率{int((rate*100))}%")
+
+for n in range(30):
+    expenditure = 0
+    # if n < 5:
+    #     expenditure = 0 # 年开支
+    # else:
+    #     expenditure = 30
+
+    y_savings = worke-expenditure  # 年储蓄
+
+    rate_money = round(amound * rate, 2)
+    amound = round(amound + rate_money + y_savings, 2)
+
+    y_income = int(rate_money + y_savings)
+
+    #     print(amound)
+    # print(y+n, amound, rate_money, round(rate_money+worke, 2), round(worke / (rate_money+worke), 2))
+    print(f"第{n+1}年结束, 资金总量达到{amound},总收入{y_income} ,资本收入{rate_money}, 储蓄{y_savings}, 工资/收入{int(worke / (rate_money+worke)*100)}%")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

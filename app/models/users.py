@@ -15,21 +15,13 @@ from app.database import (
 from app.extensions import bcrypt
 
 
-class Role(SurrogatePK, Model):
-    """A role for a view."""
-
-    __tablename__ = "roles"
-    name = Column(db.String(80), unique=True, nullable=False)
-    user_id = reference_col("users", nullable=True)
-    user = relationship("User", backref="roles")
-
-    def __init__(self, name, **kwargs):
-        """Create instance."""
-        db.Model.__init__(self, name=name, **kwargs)
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
 
     def __repr__(self):
-        """Represent instance as a unique string."""
-        return f"<Role({self.name})>"
+        return '<Role %r>' % self.name
 
 
 class User(UserMixin, SurrogatePK, Model):
@@ -39,12 +31,14 @@ class User(UserMixin, SurrogatePK, Model):
     username = Column(db.String(80), unique=True, nullable=False)
     email = Column(db.String(80), unique=True, nullable=False)
     #: The hashed password
-    password = Column(db.LargeBinary(128), nullable=True)
-    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    first_name = Column(db.String(30), nullable=True)
-    last_name = Column(db.String(30), nullable=True)
+    password = Column(db.LargeBinary(128))
+    created_at = Column(db.DateTime, default=dt.datetime.utcnow)
+    first_name = Column(db.String(30))
+    last_name = Column(db.String(30))
+
     active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
+    # role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __init__(self, username, email, password=None, **kwargs):
         """Create instance."""
